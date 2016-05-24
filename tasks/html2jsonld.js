@@ -83,7 +83,7 @@ module.exports = (grunt) => {
 				         }		
 				         var link = "http://bnf.nice.org.uk/drug/" + path.basename(file.src[0]) + anchor;
 				         var section = { hasSearchLabel: title + " | " + section_name + " | "  + type, hasSearchLink: link, body: body.text() };
-				         grunt.file.write(file.dest + anchor, JSON.stringify(section));
+				         grunt.file.write(file.dest + anchor + '.json', JSON.stringify(section));
 			       }
 		       });
 		    }
