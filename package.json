@@ -1,5 +1,5 @@
 {
-  "name": "html2jsonld",
+  "name": "html2json",
   "version": "1.0.0",
   "description": "Converts html documents to json",
   "author": {
