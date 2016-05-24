@@ -1,0 +1,15 @@
+{
+  "name": "html2jsonld",
+  "version": "1.0.0",
+  "description": "Converts html documents to json",
+  "author": {
+    "name": "Imran Azad",
+    "email": "imran.azad@nice.org.uk",
+    "url": "http://nice.org.uk"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "cheerio": "^0.20.0"
+  }
+}
