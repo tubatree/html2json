@@ -7,7 +7,10 @@ module.exports = (grunt) => {
     var options = this.options();
     var done = this.async();
     var files = this.files.slice();
-
+    
+    if(files.length <= 0)
+      throw new Error('no HTML files found');
+      
     traverseFiles();
 
     function traverseFiles() {
