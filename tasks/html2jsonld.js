@@ -85,8 +85,8 @@ module.exports = (grunt) => {
 					           inheritedTopics.remove();
 				         }		
 				         var link = "http://bnf.nice.org.uk/drug/" + path.basename(file.src[0]) + anchor;
-				         var section = { "@graph": [{hasSearchLabel: title + " | " + section_name + " | "  + type, hasSearchLink: {"@id":link}, body: body.text()}]};
-				         grunt.file.write(file.dest + anchor + '.json', JSON.stringify(section));
+				         var section = { "@graph": [{hasSearchLabel: title + " | " + section_name + " | "  + type, hasSearchLink: {"@id":link}, body: body.text().trim()}]};
+				         grunt.file.write(file.dest + anchor.replace('#', '-') + '.json', JSON.stringify(section));
 			       }
 		       });
 		    }
