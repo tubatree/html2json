@@ -24,7 +24,20 @@ module.exports = (grunt) => {
       traverseFiles();
     }
   });
-
+  
+  function htmlToJson(file, options)
+  {
+     $ = getHtml(file.src[0]);
+     $ = removeContent($, options.exclude);
+     var title = generateTitle(options.title);
+     var body = $(options.selector);
+     if(body.length > 0) {
+       body = getHotLoadedContent($, body, file.orig.cwd, options.selector);
+       var json = generateJSON(options.url + path.basename(file.src[0]) + (options.anchor ? options.selector : ""), body);
+       writeJSON(file.dest + (options.anchor ? options.selector.replace("#", "_") : ""), json);
+    }
+  }
+  
   function getHtml(path)
   {
     return cheerio.load(grunt.file.read(path), {
@@ -34,8 +47,7 @@ module.exports = (grunt) => {
 	     decodeEntities: true
 	   });
   }
-  
-  
+ 
   function isSelector(string){
     return string[0] == '.' || string[0] == '#';
   }
@@ -75,15 +87,13 @@ module.exports = (grunt) => {
     grunt.file.write(path + '.json', JSON.stringify(json));
   }
   
-  function htmlToJson(file, options)
+  function removeContent($, exclude)
   {
-     $ = getHtml(file.src[0]);	   
-     var title = generateTitle(options.title);
-     var body = $(options.selector);
-     if(body.length > 0) {
-       body = getHotLoadedContent($, body, file.orig.cwd, options.selector);
-       var json = generateJSON(options.url + path.basename(file.src[0]) + options.selector, body);
-       writeJSON(file.dest + options.selector.replace('#', '-'), json);
-    }
+    for(var i = 0; i < exclude.length; i++){
+      $(exclude[i]).remove();
+    }   
+    
+    return $;
   }
 };
+
