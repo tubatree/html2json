@@ -33,10 +33,16 @@ module.exports = (grunt) => {
      var body = $(options.selector);
      if(body.length > 0) {
        body = getHotLoadedContent($, body, file.orig.cwd, options.selector);
-       var json = generateJSON(options.url + path.basename(file.src[0]) + (options.anchor ? options.selector : ""), body);
+       var json = generateJSON(setPath(options.url, file.src[0], options.anchor, options.selector), body);
        writeJSON(file.dest + (options.anchor ? options.selector.replace("#", "_") : ""), json);
     }
   }
+  
+  function setPath(url, file, anchor, selector)
+  {
+    return url + path.dirname(file).split("/").slice(-1)[0] + "/" + 
+               path.basename(file) + (anchor ? selector : "");
+  }  
   
   function getHtml(path)
   {
