@@ -34,62 +34,56 @@ module.exports = (grunt) => {
 	     decodeEntities: true
 	   });
   }
+  
+  
+  function isSelector(string){
+    return string[0] == '.' || string[0] == '#';
+  }
+  
+  function generateTitle(title)
+  {
+    this.title = []; 
+    for(var i = 0; i < title.length; i++){
+       if(isSelector(title[i])) 
+         this.title.push($(title[i]).text())
+       else
+         this.title.push(title[i])
+    }
+    
+    return this.title;
+  }
 
+  function getHotLoadedContent($, body, cwd, selector)
+  {
+     var hotLoadedContent = body.find("[data-action=load]");
+     hotLoadedContent.each(function() {
+        var html = getHtml(path.dirname(cwd) + $(this).attr('href').replace(selector, ''));
+        body.find($(this).attr('data-target')).append(html($(this).attr('data-filter')).text());
+     });
+     hotLoadedContent.remove();
+  
+     return body;
+  }
+  
+  function generateJSON(link, body)
+  {
+    return { "@graph": [{hasSearchLabel: title.join(""), hasSearchLink: {"@id":link}, body: body.text().trim()}]};
+  }
+  
+  function writeJSON(path, json)
+  {
+    grunt.file.write(path + '.json', JSON.stringify(json));
+  }
+  
   function htmlToJson(file, options)
   {
-     if(options.sections) {
-	       $ = getHtml(file.src[0]);
-	       var title = $('.layout h1 span').text(); 
-	       var type = "Drug";
-	       var sections = [];
-	         [
-		          ['cautions'],
-		          ['contraIndications'],
-		          ['nationalFunding'],
-		          ['indicationsAndDoses'],
-		          ['medicinalForms'],
-		          ['sideEffects'],
-		          ['directionsForAdministration'],
-		          ['hepaticImpairment'],
-		          ['prescribingAndDispensingInformations'],
-		          ['importantSafetyInformations'],
-		          ['renalImpairment'],
-		          ['allergyAndCrossSensitivity'],
-		          ['handlingAndStorages'],
-		          ['professionSpecificInformation'],
-		          ['breastfeeding'],
-		          ['treatmentCessationInformation'],
-		          ['patientAndCarerAdvice'],
-		          ['monitoringRequirements'],
-		          ['unlicensedUse'],
-		          ['lessSuitableForPrescribings'],
-		          ['effectsOnLaboratoryTests'],
-		          ['interactions'],
-		          ['drugAction'],
-		          ['exceptionsToLegalCategory'],
-		          ['preTreatmentScreeningInformation'],
-		          ['pregnancy'],
-		          ['conceptionAndContraception'],
-	         ].forEach((x) => {
-			       var anchor = '#'+x[0];
-			       var section_heading = $(anchor+' h2').first();
-		        if(section_heading.length){
-				         var section_name = section_heading.text();
-				         var body = $(anchor);
-				         var inheritedTopics = body.find("[data-action=load]");
-				         if(inheritedTopics.length) {
-					           inheritedTopics.each(function() {
-						             var html = getHtml(path.dirname(file.orig.cwd) + $(this).attr('href').replace(anchor, ''));
-						             body.find($(this).attr('data-target')).append(html($(this).attr('data-filter')).text());
-					           });
-					           inheritedTopics.remove();
-				         }		
-				         var link = "http://bnf.nice.org.uk/drug/" + path.basename(file.src[0]) + anchor;
-				         var section = { "@graph": [{hasSearchLabel: title + " | " + section_name + " | "  + type, hasSearchLink: {"@id":link}, body: body.text().trim()}]};
-				         grunt.file.write(file.dest + anchor.replace('#', '-') + '.json', JSON.stringify(section));
-			       }
-		       });
-		    }
+     $ = getHtml(file.src[0]);	   
+     var title = generateTitle(options.title);
+     var body = $(options.selector);
+     if(body.length > 0) {
+       body = getHotLoadedContent($, body, file.orig.cwd, options.selector);
+       var json = generateJSON(options.url + path.basename(file.src[0]) + options.selector, body);
+       writeJSON(file.dest + options.selector.replace('#', '-'), json);
     }
+  }
 };
-
