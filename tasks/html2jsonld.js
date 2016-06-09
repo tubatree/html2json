@@ -76,8 +76,15 @@ module.exports = (grunt) => {
      var hotLoadedContent = body.find("[data-action=load]");
      hotLoadedContent.each(function() {
         var html = getHtml(path.dirname(cwd) + $(this).attr('href').replace(selector, ''));
-        body.find($(this).attr('data-target')).append(html($(this).attr('data-filter')).text());
+        if (html($(this).attr('data-target')).length) {
+                console.log("test");
+          body.find($(this).attr('data-target')).append(html($(this).attr('data-filter')).text());
+        } else {
+          console.log("test");
+          body.append("sdfsdfsd");
+        }
      });
+
      hotLoadedContent.remove();
   
      return body;
