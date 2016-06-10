@@ -47,11 +47,11 @@ module.exports = (grunt) => {
   function getHtml(path)
   {
     return cheerio.load(grunt.file.read(path), {
-	     withDomLvl1: true,
-	     normalizeWhitespace: true,
-	     xmlMode: true,
-	     decodeEntities: true
-	   });
+       withDomLvl1: true,
+       normalizeWhitespace: true,
+       xmlMode: true,
+       decodeEntities: true
+     });
   }
  
   function isSelector(string){
@@ -77,11 +77,9 @@ module.exports = (grunt) => {
      hotLoadedContent.each(function() {
         var html = getHtml(path.dirname(cwd) + $(this).attr('href').replace(selector, ''));
         if (html($(this).attr('data-target')).length) {
-                console.log("test");
           body.find($(this).attr('data-target')).append(html($(this).attr('data-filter')).text());
         } else {
-          console.log("test");
-          body.append("sdfsdfsd");
+          body.append(html($(this).attr('data-filter')).text());
         }
      });
 
@@ -109,4 +107,3 @@ module.exports = (grunt) => {
     return $;
   }
 };
-
