@@ -90,7 +90,7 @@ module.exports = (grunt) => {
   
   function generateJSON(link, body)
   {
-    return { "@graph": [{hasSearchLabel: title.join(""), hasSearchLink: {"@id":link}, body: body.text().trim()}]};
+    return {document: {title: title.join(""), link: link, body: body.text().trim()}};
   }
   
   function writeJSON(path, json)
