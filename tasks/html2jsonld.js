@@ -8,8 +8,8 @@ module.exports = (grunt) => {
     var done = this.async();
     var files = this.files.slice();
     
-    if(files.length <= 0)
-      throw new Error('no HTML files found');
+    //if(files.length <= 0)
+    //  throw new Error('no HTML files found');
       
     traverseFiles();
 
