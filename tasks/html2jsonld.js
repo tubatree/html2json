@@ -30,10 +30,11 @@ module.exports = (grunt) => {
      $ = getHtml(file.src[0]);
      $ = removeContent($, options.exclude);
      var title = generateTitle(options.title);
+	   var type = generateType(options.title);
      var body = $(options.selector);
      if(body.length > 0) {
        body = getHotLoadedContent($, body, file.orig.cwd, options.selector);
-       var json = generateJSON(setPath(options.url, file.src[0], options.anchor, options.selector), body);
+       var json = generateJSON(setPath(options.url, file.src[0], options.anchor, options.selector), body, type);
        writeJSON(file.dest + (options.anchor ? options.selector.replace("#", "_") : ""), json);
     }
   }
@@ -70,6 +71,10 @@ module.exports = (grunt) => {
     
     return this.title;
   }
+  
+  function generateType(titleArray) {
+	return titleArray[titleArray.length - 1];  
+  }
 
   function getHotLoadedContent($, body, cwd, selector)
   {
@@ -88,9 +93,9 @@ module.exports = (grunt) => {
      return body;
   }
   
-  function generateJSON(link, body)
+  function generateJSON(link, body, type)
   {
-    return {document: {title: title.join(""), link: link, body: body.text().trim()}};
+    return {document: {title: title.join(""), link: link, body: body.text().trim(), type: type}};
   }
   
   function writeJSON(path, json)
